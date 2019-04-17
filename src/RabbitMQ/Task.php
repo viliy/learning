@@ -25,6 +25,7 @@ class task
 
     public function sender($message, $key = 'task_queue')
     {
+        // 第三个参数表示是否持久化 防止崩溃后丢失
         MQ::channel()->queue_declare($key, false, true, false, false);
 
         $msg = new AMQPMessage(

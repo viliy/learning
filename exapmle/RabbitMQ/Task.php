@@ -8,8 +8,9 @@ require_once __DIR__ . './../../src/Bootstrap.php';
 
 $task = new \Zhaqq\Learning\RabbitMQ\Task();
 
-echo 'start sending....', PHP_EOL;
-$task->sender('your mother boom');
+
+$msg = ($argv[1] ?? 'your mother boom') . ' ' .($argv[2] ?? 'boom');
+echo 'sending msg....', $msg, PHP_EOL;
+$task->sender($msg);
 $task->destroy();
 echo 'send complete.', PHP_EOL;
-

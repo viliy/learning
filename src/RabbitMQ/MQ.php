@@ -8,9 +8,19 @@ namespace Zhaqq\Learning\RabbitMQ;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * Class MQ
+ * @package Zhaqq\Learning\RabbitMQ
+ */
 class MQ
 {
+
+    const EXCHANGE_TYPE_FANOUT = 'fanout';
+
+    const EXCHANGE_TYPE_DIRECT = 'direct';
+
     /**
      * @var array
      */
@@ -25,6 +35,11 @@ class MQ
      * @var AMQPChannel
      */
     protected static $channel = null;
+
+    /**
+     * @var null
+     */
+    protected static $message = null;
 
     /**
      * @return AMQPStreamConnection
@@ -58,6 +73,34 @@ class MQ
         }
 
         return self::$channel;
+    }
+
+    /**
+     * @param $message
+     * @param int $deliveryMode
+     * @return AMQPMessage
+     */
+    public static function message($message, $deliveryMode = AMQPMessage::DELIVERY_MODE_PERSISTENT)
+    {
+        return new AMQPMessage(
+            $message,
+            [
+                'delivery_mode' => $deliveryMode
+            ]
+        );
+    }
+
+    /**
+     * @param $key
+     * @param bool $passive
+     * @param bool $durable
+     * @param bool $exclusive
+     * @param bool $autoDelete
+     * @return mixed|null
+     */
+    public static function queueDeclare($key, $passive = false, $durable = true, $exclusive = false, $autoDelete = false)
+    {
+        return self::channel()->queue_declare($key, $passive, $durable, $exclusive, $autoDelete);
     }
 
     /**
